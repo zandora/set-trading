@@ -18,7 +18,7 @@
 import json
 import requests
 from web3 import Web3 # web3 library
-from decimal import * # we'll be working with large numbers (ERC-20 decimals, ...)               
+from decimal import * # we'll be working with large numbers (ERC-20 balances, ...)               
 
 # connect to blockchain node provider (Infura, Alchemy, ...)
 rpc_url = "< INPUT DATA >" # to get the RPC URL, check your provider
@@ -46,7 +46,7 @@ abi = json.loads('[{"inputs":[{"internalType":"address[]","name":"_components","
 # contract object
 contract = web3.eth.contract(address=SET_TOKEN, abi=abi)
 
-# Get total position units (quantity per set)
+# get total position units (quantity per set)
 position = Decimal(contract.functions.getDefaultPositionRealUnit(SEND_TOKEN).call()) # you can replace by a custom value for partial trading                   
 
 # convert to checksummed addresses

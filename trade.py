@@ -34,7 +34,13 @@ MANAGER_PRIVATE_KEY = "< INPUT DATA >" # manager private key ** although this is
 SET_TOKEN = "< INPUT DATA >" # set address
 SEND_TOKEN = "< INPUT DATA >" # token address to send
 RECEIVE_TOKEN = "< INPUT DATA >" # token address to receive
-gas_price = 50 * (10**9) # [wei] check appropriate price according network 
+SCAN_SERV_API_KEY = "< INPUT DATA >" # api key for etherscan.io, polygonscan.com, ... or any other service to get current gas price
+SCAN_SERV_API_ADDRESS = "https://api.polygonscan.com/api" # * polygon *, to be checked for other networks
+
+# return the current price per gas
+payload = {'module': 'proxy', 'action': 'eth_gasPrice', 'apiKey': SCAN_SERV_API_KEY}
+r = requests.get(SCAN_SERV_API_ADDRESS, params=payload)
+gas_price = int(int(r.json()["result"], 16)) # [wei]
 
 # Note: for 0x trading, for every SEND_TOKEN you should set 0x's smart contract allowances permission using the 'approve' method
 # e.g.: 
@@ -58,7 +64,7 @@ receiveToken = web3.toChecksumAddress(RECEIVE_TOKEN)
 TOTAL_SUPPLY = Decimal(contract.functions.totalSupply().call()) # contract total supply
 TOKEN_UNITS_ERC20 = Decimal(10**18)
 sendQuantity = int(position * TOTAL_SUPPLY / TOKEN_UNITS_ERC20) # 0x requires the total notional quantity
-slippagePercentage = 0.02 # max slipppage percentage
+slippagePercentage = 0.02 # max acceptable slipppage percentage allowed
 payload = {'sellToken': sendToken, 'buyToken': receiveToken, 'sellAmount': sendQuantity, 'slippagePercentage': slippagePercentage}
 r = requests.get('https://polygon.api.0x.org/swap/v1/quote', params=payload) # *polygon*
 data = r.json()["data"] # returned trade calldata
@@ -74,7 +80,7 @@ trade_module_abi = json.loads('[{"inputs":[{"internalType":"contract IController
 trade_module_contract = web3.eth.contract(address=trade_module_address, abi=trade_module_abi)
 transaction = dict(
     nonce = web3.eth.get_transaction_count(MANAGER), # number only used once
-    gas = 1000000, # [units] gas for the transaction, it will return unused gas
+    gas = 1000000, # [units] gas for the transaction, it will return unused gas (tx usually requires around 600K units)
     gasPrice = gas_price, # cost to perform the transaction
     to = trade_module_address, # address of the contract to be invoked
     data = trade_module_contract.encodeABI(fn_name = fn_name, args = fn_args), # to encode invoked function and its arguments

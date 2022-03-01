@@ -37,7 +37,7 @@ RECEIVE_TOKEN = "< INPUT DATA >" # token address to receive
 SCAN_SERV_API_KEY = "< INPUT DATA >" # api key for etherscan.io, polygonscan.com, ... or any other service to get current gas price
 SCAN_SERV_API_ADDRESS = "https://api.polygonscan.com/api" # * polygon *, to be checked for other networks
 
-# return the current price per gas
+# return the current gas price
 payload = {'module': 'proxy', 'action': 'eth_gasPrice', 'apiKey': SCAN_SERV_API_KEY}
 r = requests.get(SCAN_SERV_API_ADDRESS, params=payload)
 gas_price = int(int(r.json()["result"], 16)) # [wei]

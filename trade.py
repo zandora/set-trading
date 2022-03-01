@@ -28,7 +28,7 @@ if (rpc_status != True):
     raise SystemExit('RPC connection to your blockchain node provider has failed...')
 
 # input parameters
-CHAIN_ID = 137 # network ID; for any supported network (ethereum, polygon, optimistic, ...), change URLs accordingly  
+CHAIN_ID = 137 # network ID; for any supported network (ethereum, polygon, optimistic, ...), change ID accordingly  
 MANAGER = "< INPUT DATA >" # manager address
 MANAGER_PRIVATE_KEY = "< INPUT DATA >" # manager private key ** although this is the case, it's recommended not to hardcode the key here! **
 SET_TOKEN = "< INPUT DATA >" # set address
